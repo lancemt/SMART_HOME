@@ -1,7 +1,6 @@
-import paho.mqtt.client as mqtt
-from SmartHome.Common.Event import Event
-from SmartHome.Common.DisconnectEvent import DisconnectEvent
 import time
+import paho.mqtt.client as mqtt
+from SmartHome.Common.DisconnectEvent import DisconnectEvent
 
 # Constants
 server = "iot.eclipse.org"  # URL for broker
@@ -11,6 +10,7 @@ qos = 2  # Quality of Service level
 class MqttPublisher:
     def __init__(self, home_monitor_id):
         self.home_monitor_id = home_monitor_id
+        self.reconnect_server = ""
 
         # Create MQTT Client and hook on events
         self.client = mqtt.Client(home_monitor_id)
@@ -23,10 +23,9 @@ class MqttPublisher:
 
         # Create a background thread to handle network loop
         self.client.loop_start()
-
-        time.sleep(1) # Block to allow some time to connect to server
-
         print("Started MQTT Client for Home Monitor: " + home_monitor_id)
+
+        time.sleep(1)  # Block to allow some time to connect to server
 
     def publish_event(self, event):
         # Publish event
@@ -41,8 +40,16 @@ class MqttPublisher:
         # Subscribe to disconnect topic for this home monitor
         client.subscribe("disconnect/" + str(self.home_monitor_id), qos)
 
+        # Clear state from disconnect event
+        if not self.reconnect_server == "":
+            self.reconnect_server = ""
+
     def on_disconnect(self, client, userdata, rc):
         print("Disconnected from supervisor system!")
+
+        if not self.reconnect_server == "":
+            print("Reconnecting to another broker: " + self.reconnect_server)
+            client.connect(self.reconnect_server, 1883, 60)
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
@@ -50,10 +57,5 @@ class MqttPublisher:
             disconnect_event = DisconnectEvent.from_json(str(msg.payload.decode("utf-8")))
 
             print("Received disconnect event! Disconnecting from Broker...")
+            self.reconnect_server = disconnect_event.reconnect_ip_address
             client.disconnect()
-
-            reconnect_server = disconnect_event.reconnect_ip_address
-            if not reconnect_server  == "":
-                print("Reconnecting to another broker: " + reconnect_server)
-                client.connect(reconnect_server, 1883, 60)
-

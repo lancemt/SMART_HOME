@@ -1,7 +1,7 @@
 # Based on code from https://pypi.python.org/pypi/paho-mqtt/1.1#installation
 
-import paho.mqtt.client as mqtt
 import time
+import paho.mqtt.client as mqtt
 from SmartHome.Common.DisconnectEvent import DisconnectEvent
 
 # Constants
@@ -17,11 +17,13 @@ def on_connect(client, userdata, flags, rc):
 client = mqtt.Client()
 client.on_connect = on_connect
 
+#client.connect("test.mosquitto.org", 1883, 60)
 client.connect("iot.eclipse.org", 1883, 60)
-time.sleep(5)  # Block to allow some time to connect to server
+time.sleep(1)  # Block to allow some time to connect to server
 
 #disconnect = DisconnectEvent("iot.eclipse.org")
-disconnect = DisconnectEvent("broker.hivemq.com")
+disconnect = DisconnectEvent("test.mosquitto.org")
+#disconnect = DisconnectEvent("")
 client.publish("disconnect/ABCDEF12345", str(disconnect.to_json()), 2)
 
 print("Sent disconnect event!")

@@ -30,14 +30,13 @@ def process_event(event):
     print("Received event with ID: " + event.event_id)
 
 
+# Create client
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
+# Connect to broker
 client.connect("iot.eclipse.org", 1883, 60)
 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
+# Block and process network activity
 client.loop_forever()

@@ -17,8 +17,3 @@ class Event:
     def from_json(cls, json_str):
         json_dict = json.loads(json_str)
         return cls(**json_dict)
-
-
-# e = Event("Event1", "Non-Critical", "Some Description", "12:00", "HM1", "SENS-1")
-# print(Event.from_json(e.to_json()).to_json())
-
