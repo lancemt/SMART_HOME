@@ -1,6 +1,8 @@
 # Based on code from https://pypi.python.org/pypi/paho-mqtt/1.1#installation
 
 from pymongo import MongoClient
+import uuid
+import pprint
 import paho.mqtt.client as mqtt
 from SmartHome.Common.Event import Event
 from SmartHome.Common.Alarm import Alarm
@@ -29,13 +31,13 @@ def on_message(client, userdata, msg):
 
 # Converting received event into an alarm
 def process_event(event):
-    a = Alarm("Alarm1", event.event_id, event.home_monitor_id, event.sensor_id,
+    a = Alarm(str(uuid.uuid4()), event.event_id, event.home_monitor_id, event.sensor_id,
               event.time_of_event, event.description, event.state)
     print("Alarm Created!")
     store_in_database(a)
 
 
-# Converting received event into an alarm
+# Persisting alarms in the history database
 def store_in_database(alarm):
     client = MongoClient()
     db = client.SUPERVISOR_DB
@@ -46,9 +48,13 @@ def store_in_database(alarm):
                  "sensorID": alarm.sensor_id,
                  "eventTimeStamp": alarm.time_of_event,
                  "description": alarm.description,
-                 "alarmState": alarm.state}
+                 "alarmState": alarm.state,
+                 "stateHistory": alarm.state_history}
     alarmDB.insert_one(new_alarm)
-    print("Alarm was successfully stored!")
+    print("Alarm was successfully stored in the history database!")
+
+    #Test line for displaying added record
+    pprint.pprint(alarmDB.find_one({"alarmID": alarm.alarm_id})) 
     
 
 
