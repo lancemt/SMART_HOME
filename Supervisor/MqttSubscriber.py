@@ -39,13 +39,17 @@ def process_event(event):
 def store_in_database(alarm):
     client = MongoClient()
     db = client.SUPERVISOR_DB
-    event = db.event
-    new_events = [{"eventID": "1001",
-                   "eventTimeStamp": "10/07/17 11:05:02",
-                   "sensorID": "AGJJ74",
-                   "sensorType": "temperature"}]
-    result = event.insert_many(new_events)
-    result.inserted_ids
+    alarmDB = db.alarm
+    new_alarm = {"alarmID": alarm.alarm_id,
+                 "eventID": alarm.event_id,
+                 "homeMonitorID": alarm.home_monitor_id,
+                 "sensorID": alarm.sensor_id,
+                 "eventTimeStamp": alarm.time_of_event,
+                 "description": alarm.description,
+                 "alarmState": alarm.state}
+    alarmDB.insert_one(new_alarm)
+    print("Alarm was successfully stored!")
+    
 
 
 # Create client
