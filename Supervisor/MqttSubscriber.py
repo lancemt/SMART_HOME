@@ -1,5 +1,6 @@
 # Based on code from https://pypi.python.org/pypi/paho-mqtt/1.1#installation
 
+from pymongo import MongoClient
 import paho.mqtt.client as mqtt
 from SmartHome.Common.Event import Event
 from SmartHome.Common.Alarm import Alarm
@@ -31,6 +32,21 @@ def process_event(event):
     a = Alarm("Alarm1", event.event_id, event.home_monitor_id, event.sensor_id,
               event.time_of_event, event.description, event.state)
     print("Alarm Created!")
+    store_in_database(a)
+
+
+# Converting received event into an alarm
+def store_in_database(alarm):
+    client = MongoClient()
+    db = client.SUPERVISOR_DB
+    event = db.event
+    new_events = [{"eventID": "1001",
+                   "eventTimeStamp": "10/07/17 11:05:02",
+                   "sensorID": "AGJJ74",
+                   "sensorType": "temperature"}]
+    result = event.insert_many(new_events)
+    result.inserted_ids
+
 
 # Create client
 client = mqtt.Client()
