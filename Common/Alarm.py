@@ -1,5 +1,5 @@
 class Alarm:
-    def __init__(self, alarm_id, event_id, home_monitor_id, sensor_id, time_of_event, description, state, state_history):
+    def __init__(self, alarm_id, event_id, home_monitor_id, sensor_id, time_of_event, description, state):
         self.alarm_id = alarm_id
         self.event_id = event_id
         self.home_monitor_id = home_monitor_id
@@ -7,6 +7,6 @@ class Alarm:
         self.time_of_event = time_of_event
         self.description = description
         self.state = state
-        self.state_history = state_history[10]
+        self.state_history = [""]*10
 
 

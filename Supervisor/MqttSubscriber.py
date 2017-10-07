@@ -2,6 +2,7 @@
 
 import paho.mqtt.client as mqtt
 from SmartHome.Common.Event import Event
+from SmartHome.Common.Alarm import Alarm
 
 # Constants
 server = "iot.eclipse.org"  # URL for broker
@@ -25,10 +26,11 @@ def on_message(client, userdata, msg):
         process_event(event)
 
 
+# Converting received event into an alarm
 def process_event(event):
-    # Stub for testing
-    print("Received event with ID: " + event.event_id)
-
+    a = Alarm("Alarm1", event.event_id, event.home_monitor_id, event.sensor_id,
+              event.time_of_event, event.description, event.state)
+    print("Alarm Created!")
 
 # Create client
 client = mqtt.Client()
