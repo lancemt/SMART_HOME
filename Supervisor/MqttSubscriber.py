@@ -30,21 +30,28 @@ def on_message(client, userdata, msg):
 
 
 # Converting received event into an alarm
-def process_event(e):
-    alarm = Alarm(e)
+def process_event(event):
+    alarm = Alarm(event)
     print("\nAlarm Created!")
-    store_in_database(alarm)
+    store_in_database(event, alarm)
 
 
-# Persisting alarms in the history database
-def store_in_database(alarm):
+# Persisting events and alarms in the history database
+def store_in_database(event, alarm):
     client = MongoClient()
     db = client.SUPERVISOR_DB
+
+    eventDB = db.event
     alarmDB = db.alarm
+
+    eventDB.insert_one(event.__dict__)
     alarmDB.insert_one(alarm.__dict__)
-    print("Alarm was successfully stored in the history database!\n")
     
-    #Test line for displaying added record
+    print("Event was successfully stored in the history database!\n")
+    #Test line for displaying added records
+    pprint.pprint(eventDB.find_one({"event_id": list(event.__dict__.values())[0]}))
+
+    print("Alarm was successfully stored in the history database!\n")
     pprint.pprint(alarmDB.find_one({"alarm_id": list(alarm.__dict__.values())[0]})) 
    
 
