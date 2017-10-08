@@ -5,7 +5,7 @@ import uuid
 import pprint
 import paho.mqtt.client as mqtt
 from SmartHome.Common.Event import Event
-from SmartHome.Common.Alarm import Alarm
+from SmartHome.Supervisor.Alarm import Alarm
 
 # Constants
 server = "iot.eclipse.org"  # URL for broker
@@ -31,8 +31,7 @@ def on_message(client, userdata, msg):
 
 # Converting received event into an alarm
 def process_event(event):
-    a = Alarm(str(uuid.uuid4()), event.event_id, event.home_monitor_id, event.sensor_id,
-              event.time_of_event, event.description, event.state)
+    a = Alarm(event).create()
     print("Alarm Created!")
     store_in_database(a)
 
@@ -49,14 +48,15 @@ def store_in_database(alarm):
                  "eventTimeStamp": alarm.time_of_event,
                  "description": alarm.description,
                  "alarmState": alarm.state,
-                 "stateHistory": alarm.state_history}
+                 "stateHistory": alarm.state_history,
+                 "acknowledgedBy": alarm.acknowledged_by,
+                 "acknowledgedAt": alarm.acknowledged_at}
     alarmDB.insert_one(new_alarm)
     print("Alarm was successfully stored in the history database!")
 
     #Test line for displaying added record
     pprint.pprint(alarmDB.find_one({"alarmID": alarm.alarm_id})) 
     
-
 
 # Create client
 client = mqtt.Client()
