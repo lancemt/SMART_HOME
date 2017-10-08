@@ -30,10 +30,10 @@ def on_message(client, userdata, msg):
 
 
 # Converting received event into an alarm
-def process_event(event):
-    a = Alarm(event).create()
+def process_event(e):
+    alarm = Alarm(e).create()
     print("Alarm Created!")
-    store_in_database(a)
+    store_in_database(alarm)
 
 
 # Persisting alarms in the history database
