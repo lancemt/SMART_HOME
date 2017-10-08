@@ -31,7 +31,7 @@ def on_message(client, userdata, msg):
 
 # Converting received event into an alarm
 def process_event(e):
-    alarm = Alarm(e).create()
+    alarm = Alarm(e)
     print("Alarm Created!")
     store_in_database(alarm)
 
@@ -41,21 +41,11 @@ def store_in_database(alarm):
     client = MongoClient()
     db = client.SUPERVISOR_DB
     alarmDB = db.alarm
-    new_alarm = {"alarmID": alarm.alarm_id,
-                 "eventID": alarm.event_id,
-                 "homeMonitorID": alarm.home_monitor_id,
-                 "sensorID": alarm.sensor_id,
-                 "eventTimeStamp": alarm.time_of_event,
-                 "description": alarm.description,
-                 "alarmState": alarm.state,
-                 "stateHistory": alarm.state_history,
-                 "acknowledgedBy": alarm.acknowledged_by,
-                 "acknowledgedAt": alarm.acknowledged_at}
-    alarmDB.insert_one(new_alarm)
+    alarmDB.insert_one(alarm.__dict__)
     print("Alarm was successfully stored in the history database!")
-
+    
     #Test line for displaying added record
-    pprint.pprint(alarmDB.find_one({"alarmID": alarm.alarm_id})) 
+    pprint.pprint(alarmDB.find_one({"alarm_id": list(alarm.__dict__.values())[0]})) 
     
 
 # Create client

@@ -13,5 +13,3 @@ class Alarm:
         self.acknowledged_by = ""
         self.acknowledged_at = ""
 
-    def create(self):
-        return self
