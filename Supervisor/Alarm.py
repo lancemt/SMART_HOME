@@ -9,7 +9,7 @@ class Alarm:
         self.time_of_event = event.time_of_event
         self.description = event.description
         self.state = event.state
-        self.state_history = [""]*10
+        self.state_history = []
         self.acknowledged_by = ""
         self.acknowledged_at = ""
 

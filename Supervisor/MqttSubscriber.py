@@ -32,7 +32,7 @@ def on_message(client, userdata, msg):
 # Converting received event into an alarm
 def process_event(e):
     alarm = Alarm(e)
-    print("Alarm Created!")
+    print("\nAlarm Created!")
     store_in_database(alarm)
 
 
@@ -42,11 +42,11 @@ def store_in_database(alarm):
     db = client.SUPERVISOR_DB
     alarmDB = db.alarm
     alarmDB.insert_one(alarm.__dict__)
-    print("Alarm was successfully stored in the history database!")
+    print("Alarm was successfully stored in the history database!\n")
     
     #Test line for displaying added record
     pprint.pprint(alarmDB.find_one({"alarm_id": list(alarm.__dict__.values())[0]})) 
-    
+   
 
 # Create client
 client = mqtt.Client()
