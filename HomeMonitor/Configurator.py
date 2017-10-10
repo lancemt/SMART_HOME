@@ -11,52 +11,53 @@
 import pandas as pd
 import json
 
- # set coloumn names
-colnames = ['SensorValue', 'SensorID', 'TIMESTAMP']
+class Configurator:
 
-size = sum(1 for l in open("/Users/UTS/Desktop/ICT-D/SensorData.csv"))
+    def __init__(self, filepath):
+        self.path = filepath
 
-# replace with https://192.168.43.64/SensorData.csv but currently linked with my local path
-df1 = pd.read_csv("/Users/UTS/Desktop/ICT-D/SensorData.csv", names=colnames, header=None, skiprows=range(1, size - 10))
+        # Load the .csv file to count the columns.
+        self.csvdataframe = pd.read_csv ( filepath )
+        # Count the columns.
+        self.numcolumns = len ( self.csvdataframe.columns )
+        #calculate size
+        self.size = sum ( 1 for l in open ( filepath ) )
+        self.colnames = ['SensorValue', 'SensorID', 'TIMESTAMP']
+
+        # Re-load the .csv file, manually setting the column names
+        self.csvdataframe = pd.read_csv ( filepath, names=self.colnames, skiprows=range ( 1, self.size - 10 ), header=None )
+
+    def csvdataframe(self):
+        df1 = self.csvdataframe
+        return df1
+
+    def Mean_Sensor_Value(self):
+        MeanSensorValue = self.csvdataframe.loc[self.csvdataframe['SensorID'] == 1, 'SensorValue'].mean()
+        return MeanSensorValue
+
+    def Time_Stamp(self):
+        TimeStamp = self.csvdataframe.iloc[0]['TIMESTAMP']
+        return TimeStamp
+
+    # capture sensorID
+    def SensorID(self):
+        SensorID = self.csvdataframe.iloc[0]['SensorID']
+        return SensorID
+
+    # simple rules engine
+    def Rule_Engine(self,r):
+
+        if 20 < r.Mean_Sensor_Value() <= 25:
+            return "Urgent"
+        if 10 < r.Mean_Sensor_Value() < 20:
+            return "Critical"
+        else:
+            return "Non Critical"
 
 
+#testing-----------------------
 
-#print(df1)
-#print(df1.columns)
-
-#calculate mean sensor value
-def Mean_Sensor_Value(df1):
-    MeanSensorValue = df1.loc[df1['SensorID'] == 1, 'SensorValue'].mean()
-    return MeanSensorValue
-#Take the first timestamp
-def Time_Stamp(df1):
-    TimeStamp = df1.iloc[0]['TIMESTAMP']
-    return TimeStamp
-#capture sensorID
-def SensorID(df1):
-    SensorID = df1.iloc[0]['SensorID']
-    return SensorID
+#r = Configurator("/Users/UTS/Desktop/ICT-D/SensorData.csv")
 
 
-#simple rules engine
-def Rule_Engine(df1):
-
-   if 20 < Mean_Sensor_Value(df1) <= 25:
-       return "Urgent"
-   if 10 < Mean_Sensor_Value(df1) < 20:
-       return"Critical"
-   else:
-       return "Non Critical"
-
-#creating an event in form of jason
-event = json.dumps(
-        dict
-        (
-            SensorValue=str(Mean_Sensor_Value(df1)),
-            TimeStamp=str(Time_Stamp(df1)),
-            SensorID=str(SensorID(df1)),
-            eventStatus=str(Rule_Engine(df1))
-        )
-    )
-
-print(event)
+#print(r.Mean_Sensor_Value(),r.Time_Stamp(),r.SensorID(), r.Rule_Engine(r))
