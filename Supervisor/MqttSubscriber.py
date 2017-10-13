@@ -38,8 +38,9 @@ def process_event(event):
 
 # Persisting events and alarms in the history database
 def store_in_database(event, alarm):
-    client = MongoClient()
-    db = client.SUPERVISOR_DB
+    #cloud supervisor database.
+    client = MongoClient('mongodb://admin:Mil$td2017@ds119585.mlab.com:19585/supervisor') 
+    db = client.Supervisor
 
     eventDB = db.event
     alarmDB = db.alarm
