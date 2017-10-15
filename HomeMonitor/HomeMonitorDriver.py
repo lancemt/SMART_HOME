@@ -1,7 +1,7 @@
 import time
 from SmartHome.Common.Event import Event
 from SmartHome.HomeMonitor.MqttPublisher import MqttPublisher
-from HomeMonitor.Configurator import Configurator
+from SmartHome.HomeMonitor.Configurator import Configurator
 
 publisher = MqttPublisher("ABCDEF12345")
 
