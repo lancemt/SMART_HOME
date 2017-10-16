@@ -49,18 +49,11 @@ class Configurator:
     # simple rules engine
     def Rule_Engine(self,r):
 
-        if 20 < r.Mean_Sensor_Value() <= 25:
+        if 20 < r.Mean_Sensor_Value() <= 23:
             return "Urgent"
-        if 10 < r.Mean_Sensor_Value() < 20:
+        else if 10 < r.Mean_Sensor_Value() < 20:
             return "Critical"
-        else:
+        else if 26 < r.Mean_Sensor_Value():
             return "Non Critical"
-
-
-#testing-----------------------
-
-r = Configurator("http://192.168.43.64/SensorData.csv")
-
-
-print(r.Mean_Sensor_Value(),r.Time_Stamp(),r.SensorID(), r.Rule_Engine(r))
-print(r.csvdataframe)
+        else:
+            return "None"
