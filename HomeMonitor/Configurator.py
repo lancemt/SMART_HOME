@@ -48,12 +48,7 @@ class Configurator:
 
     # simple rules engine
     def Rule_Engine(self,r):
-
-        if 20 < r.Mean_Sensor_Value() <= 23:
+        if r.Mean_Sensor_Value() > 33:
             return "Urgent"
-        else if 10 < r.Mean_Sensor_Value() < 20:
-            return "Critical"
-        else if 26 < r.Mean_Sensor_Value():
-            return "Non Critical"
         else:
             return "None"
