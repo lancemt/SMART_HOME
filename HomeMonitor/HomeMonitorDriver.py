@@ -6,7 +6,7 @@ from SmartHome.HomeMonitor.Configurator import Configurator
 publisher = MqttPublisher("ABCDEF12345")
 
 # /Users/UTS/Desktop/ICT-D/SensorData.csv --> should be changed to csv file location
-r = Configurator("/Users/UTS/Desktop/ICT-D/SensorData.csv")
+r = Configurator("http://192.168.43.64/SensorData.csv")
 Sensorvalue = r.Mean_Sensor_Value()
 TimeStamp = r.Time_Stamp()
 SensorID = r.SensorID()
