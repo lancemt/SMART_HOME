@@ -21,7 +21,8 @@ class Configurator:
         # Count the columns.
         self.numcolumns = len ( self.csvdataframe.columns )
         #calculate size
-        self.size = sum ( 1 for l in open ( filepath ) )
+        #self.size = sum ( 1 for l in open ( filepath) )
+        self.size = sum (1 for l in self.csvdataframe)
         self.colnames = ['SensorValue', 'SensorID', 'TIMESTAMP']
 
         # Re-load the .csv file, manually setting the column names
@@ -29,6 +30,7 @@ class Configurator:
 
     def csvdataframe(self):
         df1 = self.csvdataframe
+
         return df1
 
     def Mean_Sensor_Value(self):
@@ -57,7 +59,8 @@ class Configurator:
 
 #testing-----------------------
 
-#r = Configurator("/Users/UTS/Desktop/ICT-D/SensorData.csv")
+r = Configurator("http://192.168.43.64/SensorData.csv")
 
 
-#print(r.Mean_Sensor_Value(),r.Time_Stamp(),r.SensorID(), r.Rule_Engine(r))
+print(r.Mean_Sensor_Value(),r.Time_Stamp(),r.SensorID(), r.Rule_Engine(r))
+print(r.csvdataframe)
