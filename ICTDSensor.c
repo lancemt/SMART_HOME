@@ -48,8 +48,8 @@ int main (void)
   FILE *filePointer;
   
   
-  time_t current_time;
-  char* c_time_string;
+  /*time_t current_time;
+  char* c_time_string;*/
 
   minT =  1000 ;
   maxT = -1000 ;
@@ -63,8 +63,11 @@ int main (void)
   {
     filePointer = fopen("/var/www/html/SensorData.csv", "a");
     delay (1000) ;
-    current_time = time(NULL);
-    c_time_string = ctime(&current_time);
+    /*current_time = time(NULL);
+    c_time_string = ctime(&current_time);*/
+    char buff[20];
+    time_t now = time(NULL);
+    strftime(buff, 20, "%Y-%m-%dT%H:%M:%S", localtime(&now));
 
     result = readRHT03 (RHT03_PIN, &temp, &rh) ;
 	
@@ -81,7 +84,7 @@ int main (void)
     if (temp < minT) minT = temp ;
     if (temp > maxT) maxT = temp ;
 
-    fprintf(filePointer, "%f,%d,%s", temp / 10.0, sensorID, c_time_string);
+    fprintf(filePointer, "%f,%d,%s", temp / 10.0, sensorID, buff);
     fclose(filePointer);
   }
 
