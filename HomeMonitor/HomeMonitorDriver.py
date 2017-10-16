@@ -1,3 +1,4 @@
+import uuid
 import time
 from SmartHome.Common.Event import Event
 from SmartHome.HomeMonitor.MqttPublisher import MqttPublisher
@@ -15,7 +16,7 @@ while(1):
     eventStatus = r.Rule_Engine(r)
 
     if (eventStatus != "None"):
-        e = Event("Event1", eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
+        e = Event(str(uuid.uuid4(), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
         publisher.publish_event(e)
 
     # Give time for the event to be published, leave MQTT publisher open for disconnect events etc.
