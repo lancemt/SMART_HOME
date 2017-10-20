@@ -1,43 +1,53 @@
 <head>
 	<title>ICTD Supervisor System</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-	<h1>Welcome to Meteor!</h1>
+	<nav>
+		<div class="nav-wrapper">
+			<a href="#" class="brand-logo">Logo</a>
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+				<li><a href="sass.html">Sass</a></li>
+				<li><a href="badges.html">Components</a></li>
+				{{> loginBtn}}
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<h1>Welcome to Meteor!</h1>
+		<a class="waves-effect waves-light btn"><i class="material-icons right">input</i>button</a>
+		<!-- {{> hello}}
+		{{> info}} -->
+		<h1>Yousef Tests :)</h1>
+		<h2>Testing out accounts plugin for meteor.</h2> 
+		<!-- {{> loginButtons}} -->
+		{{#if currentUser}}
+			{{> dashboard}}
+			{{> alarmslist}} 
+		{{else}}
+		
+		{{/if}}
+	</div>
 
-	<!-- {{> hello}}
-	{{> info}} -->
-
-	<h1>Yousef Tests :)</h1>
-	<h2>Testing out accounts plugin for meteor.</h2>
-
-	{{#if currentUser}}
-	{{> dashboard}}
-	{{> alarmslist}}
-	{{else}}
-<!-- 	{{> register}}
-	{{> login}} -->
-	{{> loginButtons}}
-	{{/if}}
+	<!-- Modal Structure -->
+	<div id="modal1" class="modal">
+		<div class="modal-content">
+			<h4>Modal Header</h4>
+			<!-- {{#if currentUser}} -->
+			<!-- {{else}} -->
+			{{> register}}
+			{{> login}}
+			<!-- {{/if}} -->
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+		</div>
+	</div>
 </body>
 
-<template name="hello">
-	<button>Click Me</button>
-	<p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="info">
-	<h2>Learn Meteor!</h2>
-	<ul>
-		<li><a href="https://www.meteor.com/try" target="_blank">Do the Tutorial</a></li>
-		<li><a href="http://guide.meteor.com" target="_blank">Follow the Guide</a></li>
-		<li><a href="https://docs.meteor.com" target="_blank">Read the Docs</a></li>
-		<li><a href="https://forums.meteor.com" target="_blank">Discussions</a></li>
-	</ul>
-</template>
 
 <!-- ==================================================== -->
-
 <template name="register">
 	<form>
 		<input type="email" name="registerEmail">
@@ -45,7 +55,6 @@
 		<input type="submit" value="Register">
 	</form>
 </template>
-
 <template name="login">
 	<form>
 		<input type="email" name="loginEmail">
@@ -61,12 +70,39 @@
 
 <template name="alarmslist">
 	<h2>Unacknowledged Alarms</h2>
-	<table id="unacknowledged">
-		<tr>
-			<th>AlarmID</th>
-			<th>Description</th>
-			<th>State</th>
-			<th>Acknowledge</th>
-		</tr>
+	<table id="unacknowledged" class="striped highlight">
+		<thead>
+			<tr>
+				<th>AlarmID</th>
+				<th>Description</th>
+				<th>State</th>
+				<th>Acknowledge</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>TEST</td>
+				<td>TEST</td>
+				<td>TEST</td>
+				<td>TEST</td>
+			</tr>
+			<tr>
+				<td>TEST</td>
+				<td>TEST</td>
+				<td>TEST</td>
+				<td>TEST</td>
+			</tr>
+		</tbody>
 	</table>
+</template>
+
+<template name="loginBtn">
+	{{#if currentUser}}
+		<li><div class="userEmail">{{userEmail}}</div></li>
+		<li><a class="waves-effect waves-light btn" id="logout" href="#">
+		Logout
+		</a></li>
+	{{else}}
+		<li><a class="waves-effect waves-light btn modal-trigger" id="login" href="#modal1">Login</a></li>
+	{{/if}}
 </template>

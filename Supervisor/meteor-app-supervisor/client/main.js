@@ -1,34 +1,22 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
+
 import './main.html';
 
-Template.hello.onCreated(function helloOnCreated() {
-	// counter starts at 0
-	this.counter = new ReactiveVar(0);
-});
-
-Template.hello.helpers({
-	counter() {
-		return Template.instance().counter.get();
-	},
-});
-
-Template.hello.events({
-	'click button'(event, instance) {
-		// increment the counter when button is clicked
-		instance.counter.set(instance.counter.get() + 1);
-	},
-});
-
-// ================================
-
-Template.register.events({
-	'submit form': function(event) {
-		event.preventDefault();
-		console.log("Form submitted.");
+Template.loginBtn.helpers({
+	userEmail:function(){
+		if (Meteor.user().emails && Meteor.user().emails.length > 0) {
+				return Meteor.user().emails[0].address;
+			}
+			return 'no email';
 	}
 });
+
+// $('.collapsible').collapsible();
+// Template.loginBtn.onCreated(function () {
+// 	this.collapsible();
+// });
 
 Template.register.events({
 	'submit form': function(event){
@@ -57,4 +45,19 @@ Template.dashboard.events({
 		event.preventDefault();
 		Meteor.logout();
 	}
+});
+
+Template.loginBtn.events({
+	'click' : function(event, instance) {
+		event.preventDefault();
+		console.log("TEST");
+	},
+		'click #logout': function(event){
+		event.preventDefault();
+		Meteor.logout();
+	}
+});
+	
+Meteor.startup(function () {
+	$('.modal').modal();
 });
