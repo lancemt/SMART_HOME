@@ -11,9 +11,9 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
-	<link href="/css/main.css" rel="stylesheet" type="text/css">
 	<script src="/js/jquery.min.js"></script>
   <script src="/js/materialize.min.js"></script>
+	<link href="/css/main.css" rel="newest stylesheet" type="text/css">
 
 
 </head>
@@ -35,6 +35,33 @@
 			</ul>
 		</div>
 	</nav>
+
+
+<!-- Modal Structure -->
+	<div id="modal1" class="modal">
+		<div class="modal-content">
+			<h4 style="text-align:center">Log in</h4>
+			<div class="row">
+				<form class="col s12" action="/login" method="post">
+					<div class="row">
+						<div class="input-field col s12">
+							<input name="email" type="email" class="validate">
+							<label for="email">Email</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input name="password" type="password" class="validate">
+							<label for="password">Password</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" type="submit" value="Submit"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 	<!-- Wrap all page content here -->
 	<div class="container">

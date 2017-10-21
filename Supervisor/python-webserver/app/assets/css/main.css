@@ -1,10 +1,32 @@
 .nav-wrapper{
-	background-color:#212121;padding-left:14px
+	background-color:#212121;
+	padding-left:14px;
 }
 .userEmail{
-	font-size:80%
+	font-size:80%;
+}
+
+.modal-footer{
+	margin-top:45px; important;
+}
+
+.modal .modal-content{
+	padding-bottom:0px; important;
 }
 
 table.highlight tbody tr:hover{
-	background-color:#ccc !important
+	background-color:#ccc !important;
+}
+tbody {
+display:block;
+height:350px;
+overflow-y:overlay;
+}
+thead, tbody tr {
+display:table;
+width:100%;
+/*table-layout:fixed;*/
+}
+table {
+width:100%;
 }
