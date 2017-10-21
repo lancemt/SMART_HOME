@@ -1,18 +1,30 @@
 import pymongo
-from pymongo import MongoClient
 from bottle import template
+import datetime
 
-client = MongoClient()
-client = MongoClient('localhost', 27017)
+client = pymongo.MongoClient()
+client = pymongo.MongoClient('localhost', 27017)
 db = client['test']
 Alarm = db['Alarm']
 
-print(Alarm.find().sort('$natural', 1).limit(1))
+def updateAlarmById(id, state):
+	alarm = Alarm.find_one({"alarm_id": id})
+	alarm = Alarm.find_one_and_update({"alarm_id": id},
+		{'$set':
+		{
+			"acknowledged_by":"TODO:fixme",
+			"acknowledged_at":datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),
+			"state":state,
+			"state_history":(
+				(alarm['state'] if alarm['state'] != state else ''))  +
+				(', ' if (alarm['state_history'] and alarm['state'] != state) else '') +
+				alarm['state_history']
+		}}, return_document=pymongo.ReturnDocument.AFTER)
+	return createRow(alarm, ack=1)
 
-def getAlarms(limit=10):
+def getAlarms(limit=0):
 	alarms = []
-	for data in Alarm.find().sort('$natural', 
-		pymongo.DESCENDING).limit(limit):
+	for data in Alarm.find().sort('date',pymongo.DESCENDING).limit(limit):
 		alarms.append(data)
 	return alarms
 

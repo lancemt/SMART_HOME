@@ -1,12 +1,26 @@
 import subprocess
 import bottle
 from bottle import run, post, request, response, get, route, template, static_file, redirect
+from bottle.ext import beaker
 
 from time import sleep
-from populateAlarmTable import getAlarms, createRow
+from populateAlarmTable import getAlarms, createRow, updateAlarmById
 
 bottle.TEMPLATE_PATH.insert(0, 'app/views/')
 
+@route('/ackConfirm', method='post')
+def ackConfirm():
+	id = request.forms.get('id')
+	state = request.forms.get('state')
+	print(state)
+	return updateAlarmById(id, state)
+@route('/test')
+def test():
+    s = bottle.request.environ.get('beaker.session')
+    s['test'] = s.get('test',0) + 1
+    s['bob'] = s.get('bob',0) +2
+    s.save()
+    return 'Test counter: %d, %d' % (s['test'], s['bob'])
 @route('/', method = 'get')
 def home_page():
 	# response.set_header('Content-type', 'image/jpeg')
@@ -25,7 +39,10 @@ def alarm_page():
 def login():
 	username = request.forms.get('email')
 	password = request.forms.get('password')
-	print(username, password)
+	conf_pwd = request.forms.get('confirm_password')
+	admin = request.forms.get('admin')
+	print(username, password, conf_pwd, admin)
+	return "test"
 	redirect('/alarmpage')
 @route('/wait', method='post')
 def waiting():
