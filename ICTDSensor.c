@@ -24,11 +24,14 @@
 
 #include <stdio.h>
 #include <time.h>
-
 #include <wiringPi.h>
 #include <maxdetect.h>
 
-#define	RHT03_PIN	7
+#define RHT03_PIN   7
+
+static const int SENSOR_MIN_TEMP = -400;
+static const int SENSOR_MAX_TEMP = 800;
+static const int SENSOR_CODE_DIVISOR = 10;
 
 /*
  ***********************************************************************
@@ -38,55 +41,44 @@
 
 int main (void)
 {
-  int result, temp, rh, sensorID = 1;
-  int minT, maxT;
+    int result, temp, rh, sensorID = 1;
+    int minT, maxT;
 
-  int numGood, numBad ;
-
-  wiringPiSetup () ;
-  piHiPri       (55) ;
-  FILE *filePointer;
+    wiringPiSetup();
+    piHiPri       (55);
+    FILE *filePointer;
   
-  
-  /*time_t current_time;
-  char* c_time_string;*/
-
-  minT =  1000 ;
-  maxT = -1000 ;
-
-  /**minRH =  1000 ;
-  maxRH = -1000 ;**/
-
-  numGood = numBad = 0 ;
-  
-  for (;;)
-  {
-    filePointer = fopen("/var/www/html/SensorData.csv", "a");
-    delay (1000) ;
-    /*current_time = time(NULL);
-    c_time_string = ctime(&current_time);*/
-    char buff[20];
-    time_t now = time(NULL);
-    strftime(buff, 20, "%Y-%m-%dT%H:%M:%S", localtime(&now));
-
-    result = readRHT03 (RHT03_PIN, &temp, &rh) ;
-	
-    if (!result)
+    for (;;)
     {
-      printf (".") ;
-      fflush (stdout) ;
-      ++numBad ;
-      continue ;
+        filePointer = fopen("/var/www/html/SensorData.csv", "a");
+    
+        delay (1000);
+    
+        char timeStamp[20];
+        time_t now = time(NULL);
+    
+        strftime(timeStamp, 20, "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+        // Sensor can only be read every 2000ms, returns last known good result if sample interval too low
+        result = readRHT03 (RHT03_PIN, &temp, &rh);
+    
+        if (!result)
+        {
+            // Sensor read error, print to stdout and continue
+            printf (".");
+            fflush (stdout);
+            continue;
+        }
+
+        // Cap sensor reading to sane values
+        if (temp < SENSOR_MIN_TEMP)
+            temp = SENSOR_MIN_TEMP;
+        if (temp > SENSOR_MAX_TEMP)
+            temp = SENSOR_MAX_TEMP;
+
+        fprintf(filePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp);
+        fclose(filePointer);
     }
 
-    ++numGood ;
-
-    if (temp < minT) minT = temp ;
-    if (temp > maxT) maxT = temp ;
-
-    fprintf(filePointer, "%f,%d,%s", temp / 10.0, sensorID, buff);
-    fclose(filePointer);
-  }
-
-  return 0 ;
+    return 0;
 }
