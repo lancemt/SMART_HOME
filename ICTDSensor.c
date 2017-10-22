@@ -1,28 +1,20 @@
-/*
- * rht03.c:
- *	Driver for the MaxDetect series sensors
+ /*
+ * ICTDSensor.c
  *
- * Copyright (c) 2012-2013 Gordon Henderson. <projects@drogon.net>
- ***********************************************************************
- * This file is part of wiringPi:
- *	https://projects.drogon.net/raspberry-pi/wiringpi/
+ * Driver to interface the RHT03 (MaxDetect Technology) sensor  on a Raspberry
+ * Pi SBC to the Home Monitor
  *
- *    wiringPi is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU Lesser General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ ******************************************************************************
+ * (C) 2017 Team Bronte, UTS 48481 ICTD
  *
- *    wiringPi is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Lesser General Public License for more details.
+ * This file depends on, and is derived from portions of the wiringPi library, 
+ * which is licensed under GNU LGPL 3.0.
  *
- *    You should have received a copy of the GNU Lesser General Public License
- *    along with wiringPi.  If not, see <http://www.gnu.org/licenses/>.
- ***********************************************************************
+ * wiringPi is copyright (c) 2012-2013 Gordon Henderson. <projects@drogon.net>
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <wiringPi.h>
 #include <maxdetect.h>
@@ -33,40 +25,52 @@ static const int SENSOR_MIN_TEMP = -400;
 static const int SENSOR_MAX_TEMP = 800;
 static const int SENSOR_CODE_DIVISOR = 10;
 
+void CheckUser(void);
+
 /*
  ***********************************************************************
  * The main program
  ***********************************************************************
  */
 
-int main (void)
+int main(void)
 {
     int result, temp, rh, sensorID = 1;
     int minT, maxT;
+    
+    FILE *currentFilePointer;
+    FILE *newFilePointer;
+    FILE *initFilePointer;
+
+    CheckUser();
 
     wiringPiSetup();
-    piHiPri       (55);
-    FILE *filePointer;
+    piHiPri(55); // Requires root
+    
+    // Create blank file if one does not already exist, or later code will flip
+    // out
+    initFilePointer = fopen("/var/www/html/SensorData.csv", "w+");
+    fclose(initFilePointer);
   
     for (;;)
     {
-        filePointer = fopen("/var/www/html/SensorData.csv", "a");
-    
-        delay (1000);
+        // Slow down sensor read interval
+        delay(1000);
     
         char timeStamp[20];
         time_t now = time(NULL);
     
         strftime(timeStamp, 20, "%Y-%m-%dT%H:%M:%S", localtime(&now));
 
-        // Sensor can only be read every 2000ms, returns last known good result if sample interval too low
-        result = readRHT03 (RHT03_PIN, &temp, &rh);
+        // Sensor can only be read every 2000ms, returns last known good result
+        // if sample interval too low
+        result = readRHT03(RHT03_PIN, &temp, &rh);
     
         if (!result)
         {
             // Sensor read error, print to stdout and continue
-            printf (".");
-            fflush (stdout);
+            printf(".");
+            fflush(stdout);
             continue;
         }
 
@@ -76,9 +80,41 @@ int main (void)
         if (temp > SENSOR_MAX_TEMP)
             temp = SENSOR_MAX_TEMP;
 
-        fprintf(filePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp);
-        fclose(filePointer);
+        // Copy contents of existing file to a new one
+        currentFilePointer = fopen("/var/www/html/SensorData.csv", "r"); // Read only
+        newFilePointer = fopen("/var/www/html/SensorData2.csv", "w+"); // Truncate, and write
+
+        while((ch = fgetc(currentFilePointer)) != EOF) // Copy contents until EOF
+        {
+            fputc(ch, newFilePointer);
+        }
+
+        fclose(currentFilePointer);
+        fclose(newFilePointer);
+
+        // Yes this is inefficient, but I'm coding blind and am not sure of the
+        // fprintf behaviour... feel free to modify once tested.
+        newFilePointer = fopen("/var/www/html/SensorData2.csv", "a");
+        fprintf(newFilePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp);
+        fclose (newFilePointer);
+
+        // Atomic on POSIX ONLY, will FAIL on other OSs
+        rename("/var/www/html/SensorData2.csv", "/var/www/html/SensorData.csv")
     }
 
     return 0;
+}
+
+/*
+ ***********************************************************************
+ * Check script is running with root privileges, exit if not
+ ***********************************************************************
+ */
+void CheckUser(void)
+{
+    if (geteuid() != 0)
+    {
+        printf("Please re-run with root permissions to set priority to (near) real time")
+        exit(1)
+    }
 }
