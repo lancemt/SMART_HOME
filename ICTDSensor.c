@@ -80,23 +80,30 @@ int main(void)
         if (temp > SENSOR_MAX_TEMP)
             temp = SENSOR_MAX_TEMP;
 
-        // Copy contents of existing file to a new one
+        char fileLines[10][50];
+        int i = 0;
+
         currentFilePointer = fopen("/var/www/html/SensorData.csv", "r"); // Read only
         newFilePointer = fopen("/var/www/html/SensorData2.csv", "w+"); // Truncate, and write
 
-        while((ch = fgetc(currentFilePointer)) != EOF) // Copy contents until EOF
+        // Reads line from old file into a circular buffer until n-1 chars are read, EOF or newline
+        while (fgets(fileLines[i % 10], sizeof(fileLines[i % 10]), currentFilePointer) != NULL)
         {
-            fputc(ch, newFilePointer);
+            i++;
         }
 
         fclose(currentFilePointer);
-        fclose(newFilePointer);
 
-        // Yes this is inefficient, but I'm coding blind and am not sure of the
-        // fprintf behaviour... feel free to modify once tested.
-        newFilePointer = fopen("/var/www/html/SensorData2.csv", "a");
-        fprintf(newFilePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp);
-        fclose (newFilePointer);
+        // Flush buffer to new file
+        for (int j = (i < 9 ? 0 : i - 9); j < i; j++)
+        {
+            fprintf(newFilePointer, fileLines[j % 10]);
+        }
+
+        // Write out latest reading to file
+        fprintf(newFilePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp)
+
+        fclose(newFilePointer)
 
         // Atomic on POSIX ONLY, will FAIL on other OSs
         rename("/var/www/html/SensorData2.csv", "/var/www/html/SensorData.csv")
