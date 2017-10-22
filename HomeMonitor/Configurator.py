@@ -19,14 +19,14 @@ class Configurator:
         # Load the .csv file to count the columns.
         self.csvdataframe = pd.read_csv ( filepath )
         # Count the columns.
-        self.numcolumns = len ( self.csvdataframe.columns )
+        #self.numcolumns = len ( self.csvdataframefinal.columns )
         #calculate size
-        #self.size = sum ( 1 for l in open ( filepath) )
+        self.size = self.csvdataframe.shape[0]
         self.size = sum (1 for l in self.csvdataframe)
         self.colnames = ['SensorValue', 'SensorID', 'TIMESTAMP']
 
         # Re-load the .csv file, manually setting the column names
-        self.csvdataframe = pd.read_csv ( filepath, names=self.colnames, skiprows=range ( 1, self.size - 10 ), header=None )
+        self.csvdataframefinal = pd.read_csv ( filepath, names=self.colnames, skiprows = self.csvdataframe.shape[0] - 9, header=None )
 
     def csvdataframe(self):
         df1 = self.csvdataframe
