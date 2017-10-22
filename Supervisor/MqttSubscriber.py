@@ -50,10 +50,10 @@ def store_in_database(event, alarm):
     print("Event was successfully stored in the history database!\n")
 
     #Test line for displaying added records
-    #pprint.pprint(eventDB.find_one({"event_id": list(event.__dict__.values())[0]}))
+    pprint.pprint(eventDB.find_one({"event_id": list(event.__dict__.values())[0]}))
 
-    print("Alarm was successfully stored in the history database!\n")
-    #pprint.pprint(alarmDB.find_one({"alarm_id": list(alarm.__dict__.values())[0]})) 
+    print("\nAlarm was successfully stored in the history database!\n")
+    pprint.pprint(alarmDB.find_one({"alarm_id": list(alarm.__dict__.values())[0]})) 
    
 
 # Create client
