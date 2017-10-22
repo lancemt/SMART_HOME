@@ -13,6 +13,5 @@ class SMS:
         
     def send(self):
         client = Client(sid, auth)
-        client.messages.create(to = self.des, from_= sender, 
-                       body = self.msg)
+        client.messages.create(to = self.des, from_= sender, body = self.msg)
         print("SMS sent!")
