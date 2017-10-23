@@ -80,14 +80,14 @@ int main(void)
         if (temp > SENSOR_MAX_TEMP)
             temp = SENSOR_MAX_TEMP;
 
-        char fileLines[10][50];
+        char fileLines[1001][50];
         int i = 0;
 
         currentFilePointer = fopen("/var/www/html/SensorData.csv", "r"); // Read only
         newFilePointer = fopen("/var/www/html/SensorData2.csv", "w+"); // Truncate, and write
 
         // Reads line from old file into a circular buffer until n-1 chars are read, EOF or newline
-        while (fgets(fileLines[i % 10], sizeof(fileLines[i % 10]), currentFilePointer) != NULL)
+        while (fgets(fileLines[i % 1001], sizeof(fileLines[i % 1001]), currentFilePointer) != NULL)
         {
             i++;
         }
@@ -95,9 +95,9 @@ int main(void)
         fclose(currentFilePointer);
 
         // Flush buffer to new file
-        for (int j = (i < 9 ? 0 : i - 9); j < i; j++)
+        for (int j = (i < 1000 ? 0 : i - 1000); j < i; j++)
         {
-            fprintf(newFilePointer, fileLines[j % 10]);
+            fprintf(newFilePointer, fileLines[j % 1001]);
         }
 
         // Write out latest reading to file
