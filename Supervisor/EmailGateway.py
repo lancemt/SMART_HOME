@@ -15,7 +15,7 @@ class Email:
         mail.ehlo()
         mail.starttls()
         mail.login(sender_email,sender_pw)
-        mail.sendmail(sender_email, self.des ,self.msg)
+        mail.sendmail(sender_email, self.des, self.msg)
         mail.close()
         print("Email sent!")
 
