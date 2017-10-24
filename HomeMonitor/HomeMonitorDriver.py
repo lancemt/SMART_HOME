@@ -15,7 +15,7 @@ while(1):
     TimeStamp = r.Time_Stamp ()
     SensorID = r.SensorID ()
     if (eventStatus == eventStatusUnique) or (eventStatus == "None")
-        break
+        continue
     else:
     eventStatusUnique = eventStatus
     e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
