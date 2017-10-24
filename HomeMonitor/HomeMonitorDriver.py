@@ -6,9 +6,10 @@ from SmartHome.HomeMonitor.MqttPublisher import MqttPublisher
 
 publisher = MqttPublisher("ABCDEF12345")
 
-# /Users/UTS/Desktop/ICT-D/SensorData.csv --> should be changed to csv file locationwhile(1):
+eventStatusUnique = "None"
 while(1):
     
+# /Users/UTS/Desktop/ICT-D/SensorData.csv --> should be changed to csv file locationwhile(1):
     r = Configurator("http://192.168.43.64/SensorData.csv")
     eventStatus = r.Rule_Engine (r)
     Sensorvalue = r.Mean_Sensor_Value()
