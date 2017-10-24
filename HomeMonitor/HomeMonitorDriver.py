@@ -6,20 +6,21 @@ from SmartHome.HomeMonitor.MqttPublisher import MqttPublisher
 
 publisher = MqttPublisher("ABCDEF12345")
 
-# /Users/UTS/Desktop/ICT-D/SensorData.csv --> should be changed to csv file location
-'''while(1):
+# /Users/UTS/Desktop/ICT-D/SensorData.csv --> should be changed to csv file locationwhile(1):
+while(1):
+    
     r = Configurator("http://192.168.43.64/SensorData.csv")
-
+    eventStatus = r.Rule_Engine (r)
     Sensorvalue = r.Mean_Sensor_Value()
-    TimeStamp = r.Time_Stamp()
-    SensorID = r.SensorID()
-    eventStatus = r.Rule_Engine(r)
-
-    if (eventStatus != "None"):'''
-e = Event(str(uuid.uuid4()), "Non-Critical", "Some Description", "12:00", "HM1", "245")
-publisher.publish_event(e)
+    TimeStamp = r.Time_Stamp ()
+    SensorID = r.SensorID ()
+    if (eventStatus == eventStatusUnique) or (eventStatus == "None")
+        break
+    else:
+    eventStatusUnique = eventStatus
+    e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
+    publisher.publish_event(e)
 
     # Give time for the event to be published, leave MQTT publisher open for disconnect events etc.
     # Real HM code will loop infinitely
-time.sleep(10)
-
+    time.sleep (10)
