@@ -39,9 +39,7 @@ def alarm_page():
 def login():
 	username = request.forms.get('email')
 	password = request.forms.get('password')
-	conf_pwd = request.forms.get('confirm_password')
-	admin = request.forms.get('admin')
-	print(username, password, conf_pwd, admin)
+	print(username, password)
 	return "test"
 	redirect('/alarmpage')
 @route('/wait', method='post')
