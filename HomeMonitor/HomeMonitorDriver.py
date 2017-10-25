@@ -18,10 +18,13 @@ while(1):
     if (eventStatus == eventStatusUnique) or (eventStatus == "None")
         continue
     else:
-    eventStatusUnique = eventStatus
-    e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
-    publisher.publish_event(e)
+       eventStatusUnique = eventStatus
+       e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
+       publisher.publish_event(e)
 
     # Give time for the event to be published, leave MQTT publisher open for disconnect events etc.
     # Real HM code will loop infinitely
     time.sleep (10)
+
+
+
