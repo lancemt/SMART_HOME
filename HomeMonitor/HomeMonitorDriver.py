@@ -15,7 +15,7 @@ while(1):
     Sensorvalue = r.Mean_Sensor_Value()
     TimeStamp = r.Time_Stamp ()
     SensorID = r.SensorID ()
-    if (eventStatus == eventStatusUnique) or (eventStatus == "None")
+    if (eventStatus == eventStatusUnique) or (eventStatus == "None"):
         continue
     else:
        eventStatusUnique = eventStatus
