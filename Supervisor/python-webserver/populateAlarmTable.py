@@ -24,9 +24,21 @@ def updateAlarmById(id, state):
 
 def getAlarms(limit=0):
 	alarms = []
-	for data in Alarm.find().sort('date',pymongo.DESCENDING).limit(limit):
+	for data in Alarm.find().sort('time_of_event:',pymongo.ASCENDING).limit(limit):
 		alarms.append(data)
 	return alarms
+
+def refAlarms(latestDate):
+	alarms = []
+	for doc in Alarm.find().sort('time_of_event', pymongo.DESCENDING):
+		if(latestDate != None and
+			float(latestDate) >= doc['time_of_event'].timestamp()
+			):
+			# alarms.reverse()
+			return alarms[::-1]
+		alarms.append(doc)
+	# alarms.reverse()
+	return alarms[::-1]
 
 def createRow(alarm=None, ack='1'):
 	if alarm == None:
@@ -37,7 +49,8 @@ def createRow(alarm=None, ack='1'):
 			event_id=alarm["event_id"],
 			home_monitor_id=alarm["home_monitor_id"],
 			sensor_id=alarm["sensor_id"],
-			time_of_event=alarm["time_of_event"],
+			time_of_event=#alarm["time_of_event"].strftime("%Y-%m-%d %H:%M:%S.%f"),
+			'{d.year}-{d.month:02d}-{d.day:02d} {d.hour:02d}:{d.minute:02}:{d.second:02}.{m}'.format(d=alarm["time_of_event"], m=str(alarm["time_of_event"].microsecond)[:3]),
 			description=alarm["description"],
 			state=alarm["state"],
 			state_history=alarm["state_history"],
