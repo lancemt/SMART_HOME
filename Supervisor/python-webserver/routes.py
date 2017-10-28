@@ -1,7 +1,9 @@
 import subprocess
 import bottle
+import pymongo
 from bottle import run, post, request, response, get, route, template, static_file, redirect
 from bottle.ext import beaker
+from auth import checklogin
 
 from time import sleep
 from populateAlarmTable import getAlarms, createRow, updateAlarmById
@@ -14,6 +16,7 @@ def ackConfirm():
 	state = request.forms.get('state')
 	print(state)
 	return updateAlarmById(id, state)
+
 @route('/test')
 def test():
     s = bottle.request.environ.get('beaker.session')
@@ -22,10 +25,12 @@ def test():
     s.save()
     return 'Test counter: %d, %d' % (s['test'], s['bob'])
 @route('/', method = 'get')
+
 def home_page():
 	# response.set_header('Content-type', 'image/jpeg')
 	return template('index.tpl', User='')
 @route('/alarmpage', method = 'get')
+
 def alarm_page():
 	data = ""
 	ack_data = ""
@@ -36,13 +41,21 @@ def alarm_page():
 			data += createRow(row, "")
 	return template('alarmPage.tpl', User='testUserEmail@email.we', data=data, ack_data=ack_data)
 @route('/login', method='post')
+
 def login():
 	username = request.forms.get('email')
 	password = request.forms.get('password')
 	print(username, password)
-	return "test"
-	redirect('/alarmpage')
+	acslvl = checklogin(username, password)
+	#Check Login details here and if it works then run redirect, otherwise, return error messa
+	if acslvl==0:
+                print("something")
+                redirect('/alarmpage')
+	else:
+               return "Something"
+	
 @route('/wait', method='post')
+
 def waiting():
 	sleep(10)
 	redirect('/alarmpage')
