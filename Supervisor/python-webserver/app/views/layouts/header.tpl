@@ -23,16 +23,12 @@
 			<a href="/" class="brand-logo">Logo</a>
 			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul id="nav-mobile" class="right hide-on-med-and-down">
-				<li><a href="alarmpage">Alarm Page</a></li>
-				<!-- <li><a href="badges.html">Components</a></li> -->
 				%if User:
 				<li><div class="userEmail">{{User}}</div></li>
 				<li><a class="waves-effect waves-light btn" id="logout" href="#">Logout</a></li>
 				%end
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
-				<li><a href="alarmpage">Alarm Page</a></li>
-				<!-- <li><a href="badges.html">Components</a></li> -->
 				%if User:
 				<li><a class="userEmail">{{User}}</a></li>
 				<li><a class="waves-effect waves-light btn" id="logout" href="#">Logout</a></li>
@@ -56,9 +52,6 @@ $(document).ready(function() {
             }
         });
         e.preventDefault();
-    });
-    $('#logout').click(function(e) {
-        debugger;
     });
 });
 </script>
