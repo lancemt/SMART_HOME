@@ -62,8 +62,30 @@
 			});
 		});
 	});
+	function refTable(){
+		$.ajax({
+			type: 'POST',
+			url: '/refreshTables',
+			// data: {'latestDate': latestDate},
+			statusCode: {
+				200: function(response) {
+					// Materialize.toast(response['data'][0], 1000);
+					// console.log(response);
+					$('#unacknowledged>tbody').append(response);
+					refTable();
+				},
+				299: function(response){
+					// Materialize.toast("No. of timeouts: " + ++timeoutNo, 1000);
+					console.log("Test: timeout reached, retrying...")
+					refTable();
+				}	
+			}
+		});
+	}
+
 	$(document).ready(function() {
 		$('select').material_select();
+		refTable();
 	});
 </script>
 
