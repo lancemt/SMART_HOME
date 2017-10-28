@@ -2,7 +2,7 @@
 
 <h1>LOGIN</h1>
 
-<form id="formLogin" class="col s12" action="/login" method="post">
+<form id="FormID" class="col s12" action="/login" method="post">
 					<div class="row">
 						<div class="input-field col s12">
 							<input name="email" type="email" class="validate">
@@ -18,7 +18,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<input href="#!" class="waves-effect waves-light btn confirmBtn" type="submit" value="Submit"/>
+						<input href="!#" class="waves-effect waves-light btn " type="submit" value="Submit"/>
 					</div>
 				</form>
 
@@ -26,18 +26,20 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('#formLogin').submit(function(e) {
+	$('#FormID').submit(function(e) {
 			$.ajax({
 				type: 'POST',
-				url: $('#formLogin').attr('action'),
+				url: $('#FormID').attr('action'),
 				data: $(this).serialize(),
-				success : function (response) {
+				statusCode: {
+   					 401: function() {
 						Materialize.toast(response, 1000);
+						e.preventDefault();
 						// TODO: tell the user why the login failed
 						// on success then the server will redirect.
+					}
 				}
 			});
-			e.preventDefault();
 	});
 });
 </script>
