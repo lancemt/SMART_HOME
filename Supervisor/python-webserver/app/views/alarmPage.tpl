@@ -12,7 +12,7 @@
 					<th>Acknowledge</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody style="color:red;">
 				{{!data}}
 			</tbody>
 		</table>
@@ -33,7 +33,7 @@
 					<th>Acknowledge</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody style="color: green;">
 				{{!ack_data}}
 			</tbody>
 		</table>
