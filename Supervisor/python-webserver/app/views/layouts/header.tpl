@@ -20,7 +20,7 @@
 	
 	<nav>
 		<div class="nav-wrapper">
-			<a href="/" class="brand-logo">Logo</a>
+			<a href="/" class="brand-logo">Smart Home System</a>
 			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul id="nav-mobile" class="right hide-on-med-and-down">
 				%if User:
