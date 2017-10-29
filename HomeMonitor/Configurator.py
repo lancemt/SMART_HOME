@@ -9,7 +9,7 @@
 # ------------------------------------------------------------
 
 import pandas as pd
-import json
+
 
 class Configurator:
 
@@ -18,37 +18,42 @@ class Configurator:
 
         # Load the .csv file to count the columns.
         self.csvdataframe = pd.read_csv ( filepath )
+
         # Count the columns.
-        #self.numcolumns = len ( self.csvdataframefinal.columns )
         #calculate size
-        self.size = self.csvdataframe.shape[0]
-        self.size = sum (1 for l in self.csvdataframe)
+        self.size = (self.csvdataframe).shape[0]
+
+        #self.row_count = sum(1 for row in self.csvdataframe)
         self.colnames = ['SensorValue', 'SensorID', 'TIMESTAMP']
 
         # Re-load the .csv file, manually setting the column names
-        self.csvdataframefinal = pd.read_csv ( filepath, names=self.colnames, skiprows = self.csvdataframe.shape[0] - 9, header=None )
+        self.csvdataframefinal = pd.read_csv ( filepath, names=self.colnames, skiprows = (self.size - 10), header=None )
+
 
     def csvdataframe(self):
-        df1 = self.csvdataframe
-
+        df1 = self.csvdataframefinal
         return df1
 
     def Mean_Sensor_Value(self):
-        MeanSensorValue = self.csvdataframe.loc[self.csvdataframe['SensorID'] == 1, 'SensorValue'].mean()
+        MeanSensorValue = self.csvdataframefinal.loc[self.csvdataframefinal['SensorID'] == 1, 'SensorValue'].mean()
         return MeanSensorValue
 
     def Time_Stamp(self):
-        TimeStamp = self.csvdataframe.iloc[0]['TIMESTAMP']
+        TimeStamp = self.csvdataframefinal.iloc[0]['TIMESTAMP']
         return TimeStamp
 
     # capture sensorID
     def SensorID(self):
-        SensorID = self.csvdataframe.iloc[0]['SensorID']
+        SensorID = self.csvdataframefinal.iloc[0]['SensorID']
         return SensorID
 
     # simple rules engine
     def Rule_Engine(self,r):
-        if r.Mean_Sensor_Value() > 33:
+        if r.Mean_Sensor_Value() > 22.5 and  r.Mean_Sensor_Value() <= 23.5:
+            return "Non Critical"
+        elif r.Mean_Sensor_Value()> 23.5 and r.Mean_Sensor_Value() <= 24.5:
             return "Urgent"
+        elif r.Mean_Sensor_Value () > 24.5:
+            return "Critical"
         else:
             return "None"
