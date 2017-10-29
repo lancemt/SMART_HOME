@@ -71,7 +71,8 @@
 				200: function(response) {
 					// Materialize.toast(response['data'][0], 1000);
 					// console.log(response);
-					$('#unacknowledged>tbody').append(response);
+					$('#unacknowledged>tbody').append(response);	
+					$('select').material_select();
 					refTable();
 				},
 				299: function(response){

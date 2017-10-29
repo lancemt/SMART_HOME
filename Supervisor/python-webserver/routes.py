@@ -40,7 +40,7 @@ def alarm_page():
 			ack_data += createRow(row, 1)
 		else:
 			data += createRow(row, "")
-	s['latestDate'] = row['time_of_event'].timestamp() if row != None else None
+	s['latestDate'] = row['time_of_event'] if row != None else None
 	s.save()
 	return template('alarmPage.tpl', User='testUserEmail@email.we', data=data, ack_data=ack_data)
 
@@ -72,19 +72,22 @@ def fonts(dirName, filename):
 def refresh_tables():
 	s = bottle.request.environ.get('beaker.session')
 	s['latestDate'] = s.get('latestDate', None)
+	s['latestId'] = s.get('latestId')
 	latestDate = s['latestDate']
+	latestId= s['latestId']
 	print(latestDate)
 	# latestDate = request.get_cookie("latestDate")
 	result = []
 	timeout = 0
 	while(result == []):
-		result = refAlarms(latestDate=latestDate if latestDate != "" else None)
+		result = refAlarms(latestDate=latestDate, latestId=latestId)
 		sleep(0.5)
 		timeout += 0.5
 		if(timeout >= 5):
 			response.status = 299
 			return "timeout"
-	s['latestDate'] = result[-1]['time_of_event'].timestamp()
+	s['latestDate'] = result[-1]['time_of_event']
+	s['latestId'] = result[-1]['_id']
 	s.save()
 	# response.set_cookie("latestDate", latestDate)
 	data = ""

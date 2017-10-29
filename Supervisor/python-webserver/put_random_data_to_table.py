@@ -14,7 +14,7 @@ def populate():
 		"event_id": populate.id,
 		"home_monitor_id": "HM1",
 		"sensor_id": "AGJJ74",
-		"time_of_event": datetime.datetime.today(),
+		"time_of_event": datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),
 		"description": "Some Description2",
 		"state": "Urgent",
 		"state_history": "",
