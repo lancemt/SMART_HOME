@@ -16,7 +16,7 @@ while(1):
     Sensorvalue = r.Mean_Sensor_Value()
     TimeStamp = r.Time_Stamp()
     SensorID = r.SensorID()
-    Description = "Sensor with Sensor ID " + str(SensorID) + " has showed temperature change which triggered an event( " + eventStatus + " ) in HM1 at" + str(TimeStamp)
+    Description = "Sensor with Sensor ID " + str(SensorID) + " has showed temperature change which triggered an event (" + eventStatus + ") in HM1 at" + str(TimeStamp)
     if (eventStatus == eventStatusUnique) or (eventStatus == "None"):
         continue
     else:
