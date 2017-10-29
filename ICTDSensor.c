@@ -1,4 +1,4 @@
- /*
+/*
  * ICTDSensor.c
  *
  * Driver to interface the RHT03 (MaxDetect Technology) sensor  on a Raspberry
@@ -13,6 +13,7 @@
  * wiringPi is copyright (c) 2012-2013 Gordon Henderson. <projects@drogon.net>
  */
 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -20,10 +21,11 @@
 #include <maxdetect.h>
 
 #define RHT03_PIN   7
+#define LinesInCSV 100
 
 static const int SENSOR_MIN_TEMP = -400;
 static const int SENSOR_MAX_TEMP = 800;
-static const int SENSOR_CODE_DIVISOR = 10;
+static const double SENSOR_CODE_DIVISOR = 10;
 
 void CheckUser(void);
 
@@ -36,7 +38,7 @@ void CheckUser(void);
 int main(void)
 {
     int result, temp, rh, sensorID = 1;
-    int minT, maxT;
+    //int minT, maxT;
     
     FILE *currentFilePointer;
     FILE *newFilePointer;
@@ -80,14 +82,14 @@ int main(void)
         if (temp > SENSOR_MAX_TEMP)
             temp = SENSOR_MAX_TEMP;
 
-        char fileLines[1001][50];
+        char fileLines[LinesInCSV][50];
         int i = 0;
 
         currentFilePointer = fopen("/var/www/html/SensorData.csv", "r"); // Read only
         newFilePointer = fopen("/var/www/html/SensorData2.csv", "w+"); // Truncate, and write
 
         // Reads line from old file into a circular buffer until n-1 chars are read, EOF or newline
-        while (fgets(fileLines[i % 1001], sizeof(fileLines[i % 1001]), currentFilePointer) != NULL)
+        while (fgets(fileLines[i % LinesInCSV], sizeof(fileLines[i % LinesInCSV]), currentFilePointer) != NULL)
         {
             i++;
         }
@@ -95,18 +97,18 @@ int main(void)
         fclose(currentFilePointer);
 
         // Flush buffer to new file
-        for (int j = (i < 1000 ? 0 : i - 1000); j < i; j++)
+        for (int j = (i < (LinesInCSV-1) ? 0 : i - (LinesInCSV-1)); j < i; j++)
         {
-            fprintf(newFilePointer, fileLines[j % 1001]);
+            fprintf(newFilePointer, fileLines[j % LinesInCSV]);
         }
 
         // Write out latest reading to file
-        fprintf(newFilePointer, "%f,%d,%s", temp / SENSOR_CODE_DIVISOR, sensorID, timeStamp)
+        fprintf(newFilePointer, "%f,%d,%s\n", (temp / SENSOR_CODE_DIVISOR), sensorID, timeStamp);
 
-        fclose(newFilePointer)
+        fclose(newFilePointer);
 
         // Atomic on POSIX ONLY, will FAIL on other OSs
-        rename("/var/www/html/SensorData2.csv", "/var/www/html/SensorData.csv")
+        rename("/var/www/html/SensorData2.csv", "/var/www/html/SensorData.csv");
     }
 
     return 0;
@@ -121,7 +123,7 @@ void CheckUser(void)
 {
     if (geteuid() != 0)
     {
-        printf("Please re-run with root permissions to set priority to (near) real time")
-        exit(1)
+        printf("Please re-run with root permissions to set priority to (near) real time");
+        exit(1);
     }
 }
