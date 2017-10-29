@@ -4,7 +4,7 @@ from SmartHome.Common.Event import Event
 from SmartHome.HomeMonitor.MqttPublisher import MqttPublisher
 from SmartHome.HomeMonitor.Configurator import Configurator
 
-#publisher = MqttPublisher("ABCDEF12345")
+publisher = MqttPublisher("ABCDEF12345")
 
 eventStatusUnique = "None"
 while(1):
@@ -20,13 +20,8 @@ while(1):
         continue
     else:
        eventStatusUnique = eventStatus
-       print(eventStatus)
-       print(TimeStamp)
-       #e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
-       #print(e)
-       #publisher.publish_event(e
+       e = Event(str(uuid.uuid4()), eventStatus, "Some Description", "12:00", "HM1", str(SensorID))
+       publisher.publish_event(e)
     # Give time for the event to be published, leave MQTT publisher open for disconnect events etc.
     # Real HM code will loop infinitely
-    time.sleep (1)
-
-
+    time.sleep(1)
