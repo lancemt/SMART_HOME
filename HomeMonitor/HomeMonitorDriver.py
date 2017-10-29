@@ -15,7 +15,7 @@ while(1):
     Sensorvalue = r.Mean_Sensor_Value()
     TimeStamp = r.Time_Stamp ()
     SensorID = r.SensorID ()
-    if (eventStatus == eventStatusUnique) or (eventStatus == "None")
+    if (eventStatus == eventStatusUnique) or (eventStatus == "None"):
         continue
     else:
        eventStatusUnique = eventStatus
@@ -25,6 +25,5 @@ while(1):
     # Give time for the event to be published, leave MQTT publisher open for disconnect events etc.
     # Real HM code will loop infinitely
     time.sleep (10)
-
 
 
