@@ -1,9 +1,9 @@
 from twilio.rest import Client
 
 # Twilio Account SID, Auth Token and Number
-sid = "AC67007313a1dafe04cdf31150431ec96e"
-auth = "cc4afdbb9052992396e228ed60caa253"
-sender = "+17738394331"
+sid = "Add SID here"
+auth = "Add authentication token here"
+sender = "Add twilio number here"
 
 class SMS:
     def __init__(self, receiver, state, message):
