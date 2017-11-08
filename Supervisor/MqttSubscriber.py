@@ -5,7 +5,7 @@ import uuid
 import pprint
 import paho.mqtt.client as mqtt
 from SmartHome.Common.Event import Event
-from SmartHome.Supervisor.Alarm import Alarm
+from Alarm import Alarm
 
 # Constants
 server = "iot.eclipse.org"  # URL for broker
@@ -39,10 +39,10 @@ def process_event(event):
 # Persisting events and alarms in the history database
 def store_in_database(event, alarm):
     client = MongoClient()
-    db = client.SUPERVISOR_DB
+    db = client.test
 
-    eventDB = db.event
-    alarmDB = db.alarm
+    eventDB = db.Event
+    alarmDB = db.Alarm
 
     eventDB.insert_one(event.__dict__)
     alarmDB.insert_one(alarm.__dict__)
